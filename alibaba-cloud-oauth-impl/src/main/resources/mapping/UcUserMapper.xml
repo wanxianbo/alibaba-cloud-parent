@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanxb.user.mapper.UcUserMapper">
+    <select id="listUcUserByKey" resultType="com.wanxb.user.entity.UcUser">
+        SELECT * FROM uc_user u WHERE u.user_name = #{key} AND u.is_deleted = 0
+        UNION
+        SELECT * FROM uc_user u WHERE u.mobile = #{key} AND u.is_deleted = 0
+        UNION
+        SELECT * FROM uc_user u WHERE u.idcard = #{key} AND u.is_deleted = 0
+    </select>
+</mapper>

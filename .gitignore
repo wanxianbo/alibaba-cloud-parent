@@ -1,0 +1,6 @@
+# Project exclude paths
+/.gradle/
+/alibaba-cloud-gateway/out/
+/alibaba-cloud-gateway/out/production/classes/
+/alibaba-cloud-oauth-impl/out/
+/alibaba-cloud-oauth-impl/out/production/classes/

@@ -1,0 +1,9 @@
+jar {
+    archiveBaseName = 'alibaba-cloud-oauth-impl'
+    version = ''
+}
+
+dependencies {
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-oauth2'
+    implementation project(':alibaba-cloud-oauth-api')
+}

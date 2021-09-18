@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: service-alibaba-cloud-gateway
+  profiles:
+    active: ${active_profiles:dev}
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${discovery_addr:127.0.0.1:8848}
+        namespace: ${discovery_space:alibaba-cloud-dev}
+      config:
+        server-addr: ${discovery_addr:127.0.0.1:8848}
+        namespace: ${discovery_space:alibaba-cloud-dev}
+        file-extension: yml
+        extension-configs:
+          - data_id: application-common.yml
+          - data_id: alibaba-cloud-redis.yml
+    sentinel:
+      transport:
+        dashboard: ${sentinel_addr:127.0.0.1:18080}
+      eager: true

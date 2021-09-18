@@ -1,0 +1,5 @@
+rootProject.name = 'alibaba-cloud-parent'
+include 'alibaba-cloud-oauth-api'
+include 'alibaba-cloud-oauth-impl'
+include 'alibaba-cloud-gateway'
+
