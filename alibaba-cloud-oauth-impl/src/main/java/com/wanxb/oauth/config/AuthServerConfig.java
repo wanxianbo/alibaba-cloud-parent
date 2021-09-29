@@ -1,12 +1,19 @@
 package com.wanxb.oauth.config;
 
+import com.wanxb.oauth.provider.VerifyCodePasswordTokenGranter;
+import com.wanxb.user.service.UcUserService;
+import com.wanxb.util.CipherUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -23,7 +30,9 @@ import org.springframework.security.oauth2.provider.implicit.ImplicitTokenGrante
 import org.springframework.security.oauth2.provider.password.ResourceOwnerPasswordTokenGranter;
 import org.springframework.security.oauth2.provider.refresh.RefreshTokenGranter;
 import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
-import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
+import org.springframework.security.oauth2.provider.token.*;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
@@ -50,9 +59,37 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    @Qualifier("userDetailsServiceCustomImpl")
+    private UserDetailsService userDetailsService;
 
-    @Value("${dc}")
-    private String dc;
+    @Autowired
+    private UcUserService ucUserService;
+
+
+//    @Value("${dc}")
+//    private String dc;
+
+    @Bean
+    public TokenStore jwtTokenStore() {
+        return new JwtTokenStore(jwtAccessTokenConverter());
+    }
+
+    /**
+     * token 生成处理：指定签名
+     * @return JwtAccessTokenConverter
+     */
+    @Bean
+    public JwtAccessTokenConverter jwtAccessTokenConverter() {
+        JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
+        String privateKey = template.boundValueOps("rsa:privateKey").get();
+        jwtAccessTokenConverter.setSigningKey(privateKey);
+        jwtAccessTokenConverter.setVerifierKey(CipherUtils.generateRSAPublicKeyFromPrivateKeyInPemFormat(privateKey).get());
+        DefaultAccessTokenConverter tokenConverter = new DefaultAccessTokenConverter();
+        tokenConverter.setUserTokenConverter(new UserAuthenticationConverter());
+        jwtAccessTokenConverter.setAccessTokenConverter(tokenConverter);
+        return jwtAccessTokenConverter;
+    }
 
     // 客户端存储，存入数据库
     @Bean
@@ -82,7 +119,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
         // requestFactory 一般配置默认的DefaultOAuth2RequestFactory
         // grantType 授权类型，自己定义
         endpoints.allowedTokenEndpointRequestMethods(HttpMethod.POST);
-        endpoints.tokenServices(null);
+        endpoints.tokenServices(defaultTokenServices());
         // 设置授权码服务
         endpoints.authorizationCodeServices(authorizationCodeServices());
         endpoints.requestFactory(requestFactory());
@@ -131,11 +168,11 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 
     private List<TokenGranter> getDefaultTokenGranters() {
         ClientDetailsService clientDetails = clientDetails();
-        AuthorizationServerTokenServices tokenServices = null;
+        AuthorizationServerTokenServices tokenServices = defaultTokenServices();
         AuthorizationCodeServices authorizationCodeServices = authorizationCodeServices();
         OAuth2RequestFactory requestFactory = requestFactory();
 
-        List<TokenGranter> tokenGranters = new ArrayList<TokenGranter>();
+        List<TokenGranter> tokenGranters = new ArrayList<>();
         //authorization_code
         tokenGranters.add(new AuthorizationCodeTokenGranter(tokenServices,
                 authorizationCodeServices, clientDetails, requestFactory));
@@ -153,9 +190,40 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
                     tokenServices, clientDetails, requestFactory));
         }
 //        //sms_code — 验证码登录
-//        tokenGranters.add(new VerifyCodePasswordTokenGranter(authenticationManager,tokenServices, clientDetails, requestFactory,userDetailsService,template,iUcUserService));
+        tokenGranters.add(new VerifyCodePasswordTokenGranter(authenticationManager, tokenServices, clientDetails,
+                requestFactory, userDetailsService, template, ucUserService));
 
         return tokenGranters;
+    }
+
+    @Primary
+    @Bean
+    public DefaultTokenServices defaultTokenServices() {
+        DefaultTokenServices tokenServices = new DefaultTokenServices();
+        // jwt相关配置
+        tokenServices.setTokenStore(jwtTokenStore());
+        TokenEnhancerChain enhancerChain = new TokenEnhancerChain();
+        List<TokenEnhancer> enhancers = new ArrayList<>();
+//        if (StringUtils.isEmpty(dc)) {
+//            dc = "limin";
+//        }
+        enhancers.add(new UserJwtTokenEnhancer());
+        enhancers.add(jwtAccessTokenConverter());
+        // 将自定义Enhancer加入EnhancerChain的delegates数组中
+        enhancerChain.setTokenEnhancers(enhancers);
+
+        tokenServices.setTokenEnhancer(enhancerChain);
+        // 支持refresh_code
+        tokenServices.setSupportRefreshToken(true);
+        //设置refresh_token的是否可重用
+        //调用/oauth/token?grant_type=refresh_token时：
+        //false：不可重用，,每次获取到新的token和refreshtoken，
+        //true：可重用，每次获取到新的token
+        tokenServices.setReuseRefreshToken(false);
+        tokenServices.setClientDetailsService(clientDetails());
+        // token有效期自定义设置，默认12小时，自定义为2小时
+        tokenServices.setAccessTokenValiditySeconds(60 * 60 * 2);
+        return tokenServices;
     }
 
 

@@ -1,5 +1,6 @@
 package com.wanxb;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -10,10 +11,11 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * </p>
  *
  * @author wanxinabo
- * @date 2021/9/16
+ * @date 2021/9/29
  */
 @EnableDiscoveryClient
-@SpringBootApplication(scanBasePackages = {"com.wanxb"})
+@MapperScan(value = "com.wanxb.**.mapper")
+@SpringBootApplication(scanBasePackages = "com.wanxb")
 public class AlibabaCloudOauthApplication {
     public static void main(String[] args) {
         SpringApplication.run(AlibabaCloudOauthApplication.class, args);
