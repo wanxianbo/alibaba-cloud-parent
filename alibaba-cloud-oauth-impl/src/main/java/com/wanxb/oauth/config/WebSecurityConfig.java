@@ -11,6 +11,7 @@ package com.wanxb.oauth.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.DelegatingMessageSource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -46,6 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Qualifier("userDetailsServiceCustomImpl")
     private UserDetailsService userDetailsService;
 
+    @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         //新版的security的自动配置包没有提供AuthenticationManager，需要手动调用authenticationManagerBean()这个方法，
