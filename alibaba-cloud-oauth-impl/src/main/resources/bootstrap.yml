@@ -1,6 +1,6 @@
 spring:
   application:
-    name: service-alibaba-cloud-ouath
+    name: service-alibaba-cloud-oauth
   profiles:
     active: ${active_profiles:dev}
   cloud:

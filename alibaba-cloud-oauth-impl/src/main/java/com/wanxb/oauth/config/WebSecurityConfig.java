@@ -21,6 +21,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Base64;
 
@@ -56,6 +58,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         messageSource1.addBasenames("classpath:org/springframework/security/messages");
         messageSource.setParentMessageSource(messageSource1);
         return super.authenticationManagerBean();
+    }
+
+
+    ////密码处理器,用于client_credentials — 客户端模式，秘钥不做加密处理
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return NoOpPasswordEncoder.getInstance();
     }
 
     @Override
