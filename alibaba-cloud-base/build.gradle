@@ -2,9 +2,6 @@ jar {
     archiveBaseName = 'alibaba-cloud-base'
     version = ''
 }
-jar {
-
-}
 
 dependencies {
 
