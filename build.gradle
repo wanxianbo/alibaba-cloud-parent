@@ -6,11 +6,7 @@ buildscript {
     }
     repositories {
         maven {
-            url 'http://whrdd.f3322.net:8090/repository/maven-public/'
-            credentials {
-                username 'user-java'
-                password 'HrelZ0CAalMh81nvOzTaGCDteKUWxc7D'
-            }
+            url 'https://maven.aliyun.com/repository/public/'
         }
         mavenLocal()
         mavenCentral()
@@ -24,14 +20,14 @@ buildscript {
 
 plugins {
     id 'org.springframework.boot' version "2.2.13.RELEASE" apply false
-    id "com.gorylenko.gradle-git-properties" version "2.3.1-rc1" apply false
+    id "com.gorylenko.gradle-git-properties" version "2.4.0" apply false
 }
 
 //git hook test
 
 ext {
     druidVersion = "1.1.10"
-    mysqlVersion = "5.1.47"
+    mysqlVersion = "8.0.29"
     mybatisPlusVersion = "3.1.0"
 }
 
@@ -72,11 +68,7 @@ subprojects { sub ->
     //添加资源库
     repositories {
         maven {
-            url "http://whrdd.f3322.net:8090/repository/maven-public/"
-            credentials {
-                username 'user-java'
-                password 'HrelZ0CAalMh81nvOzTaGCDteKUWxc7D'
-            }
+            url 'https://maven.aliyun.com/repository/public/'
         }
         maven { url "https://packages.confluent.io/maven/" }
         maven { url "https://repo.spring.io/milestone" }
@@ -88,13 +80,6 @@ subprojects { sub ->
 
     jar {
         enabled = true
-    }
-
-    gitProperties {
-        dateFormat = "yyyy-MM-dd'T'HH:mmZ"
-        dateFormatTimeZone = "CST"
-
-        dotGitDirectory = new File("${project.rootDir}", "../.git")
     }
 
     sourceSets {

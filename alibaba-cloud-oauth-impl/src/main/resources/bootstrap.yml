@@ -6,17 +6,18 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: ${discovery_addr:127.0.0.1:8848}
-        namespace: ${discovery_space:alibaba-cloud-dev}
+        server-addr: ${discovery_addr:182.61.42.24:8848}
+        namespace: ${discovery_space:f462ddd4-3113-46f2-a2c7-ceba8db221f6}
       config:
-        server-addr: ${config_addr:127.0.0.1:8848}
-        namespace: ${config_space:alibaba-cloud-dev}
+        server-addr: ${config_addr:182.61.42.24:8848}
+        namespace: ${config_space:f462ddd4-3113-46f2-a2c7-ceba8db221f6}
+        group: DEFAULT_GROUP
         file-extension: yml
         extension-configs:
           - data_id: application-common.yml
           - data_id: alibaba-cloud-redis.yml
-#          - data_id: minbao-third-party.yml
+    #          - data_id: minbao-third-party.yml
     sentinel:
       transport:
-        dashboard: ${sentinel_addr:127.0.0.1:18080}
+        dashboard: ${sentinel_addr:182.61.42.24:8080}
       eager: true
