@@ -7,10 +7,10 @@ spring:
     nacos:
       discovery:
         server-addr: ${discovery_addr:182.61.42.24:8848}
-        namespace: ${discovery_space:f462ddd4-3113-46f2-a2c7-ceba8db221f6}
+        namespace: ${discovery_space:alibaba-cloud-dev}
       config:
         server-addr: ${config_addr:182.61.42.24:8848}
-        namespace: ${config_space:f462ddd4-3113-46f2-a2c7-ceba8db221f6}
+        namespace: ${config_space:alibaba-cloud-dev}
         group: DEFAULT_GROUP
         file-extension: yml
         extension-configs:
