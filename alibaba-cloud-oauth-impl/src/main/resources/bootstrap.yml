@@ -19,5 +19,5 @@ spring:
     #          - data_id: minbao-third-party.yml
     sentinel:
       transport:
-        dashboard: ${sentinel_addr:182.61.42.24:8080}
+        dashboard: ${sentinel_addr:127.0.0.1:18080}
       eager: true
