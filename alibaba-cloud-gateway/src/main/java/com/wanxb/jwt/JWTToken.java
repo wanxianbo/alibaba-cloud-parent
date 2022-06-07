@@ -39,7 +39,7 @@ public class JWTToken {
         this.verifyContent = verifyContent;
         Base64.Decoder decoder = Base64.getUrlDecoder();
         this.sig = decoder.decode(sig);
-        checkState(sig.length == 256, "only support RS256 alg, sig must be size 256");
+        checkState(this.sig.length == 256, "only support RS256 alg, sig must be size 256");
         int dotIndex = ArrayUtils.indexOf(verifyContent, (byte) '.');
         try {
             JsonNode jsonNode = JSON_MAPPER.readTree(decoder.decode(ArrayUtils.subarray(verifyContent, 0, dotIndex)));

@@ -1,0 +1,6 @@
+<configuration debug="false">
+    <!--工程名称-->
+    <property name="project_name" value="service-alibaba-cloud-us-center-impl" />
+
+    <include resource="log/defaults.xml" />
+</configuration>

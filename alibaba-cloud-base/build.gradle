@@ -4,6 +4,7 @@ jar {
 }
 
 dependencies {
-
+    api group: 'org.json', name: 'json', version: '20180813'
+    api "com.google.guava:guava:27.1-jre"
 }
 

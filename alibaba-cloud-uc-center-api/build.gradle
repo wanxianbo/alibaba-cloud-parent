@@ -1,0 +1,8 @@
+jar {
+    archiveBaseName = 'alibaba-cloud-uc-center-api'
+    version = ''
+}
+
+dependencies {
+    api project(':alibaba-cloud-base')
+}

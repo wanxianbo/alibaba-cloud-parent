@@ -3,4 +3,6 @@ include 'alibaba-cloud-oauth-api'
 include 'alibaba-cloud-oauth-impl'
 include 'alibaba-cloud-gateway'
 include 'alibaba-cloud-base'
+include 'alibaba-cloud-uc-center-api'
+include 'alibaba-cloud-uc-center-impl'
 
