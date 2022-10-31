@@ -156,8 +156,8 @@ subprojects { sub ->
                 def isSnapshot = version.toString().endsWith("SNAPSHOT")
                 url = "http://whrdd.f3322.net:8090/repository/maven-${isSnapshot ? 'snapshots' : 'releases'}"
                 credentials {
-                    username 'admin'
-                    password 'DdJan05H46CGtNmWnK2H6VgbsqCxyjMR'
+                    username ''
+                    password ''
                 }
             }
         }
