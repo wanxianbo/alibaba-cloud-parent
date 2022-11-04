@@ -40,7 +40,8 @@ public class JWTVerifier {
     public boolean verify() {
         if (token == null) return false;
         if (token.getPayload() == null) return false;
-        if (Strings.isNullOrEmpty(token.getPayload().getDc())) return false;
+        // 独立部署的标识 暂时无
+        // if (Strings.isNullOrEmpty(token.getPayload().getDc())) return false;
         if (token.getPayload().isExpired()) {
             clearMemo();
             return false;
