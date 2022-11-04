@@ -76,7 +76,7 @@ public class JWTHeaderFilter implements GlobalFilter, Ordered {
 
         if (!verified) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            exchange.getResponse().setComplete();
+            return exchange.getResponse().setComplete();
         }
 
         assert jwtToken != null;
