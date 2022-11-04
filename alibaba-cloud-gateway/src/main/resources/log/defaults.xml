@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Default logback configuration provided for import, equivalent to the programmatic
+initialization performed by Boot
+-->
+
+<included>
+    <!--定义日志文件的输出格式-->
+    <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+    <property name="log_pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"/>
+
+
+    <!--定义日志文件的存储地址-->
+    <property name="log_home" value="/ssd0/logs/springcloud/${project_name}"/>
+
+
+    <!--本地环境默认值-->
+    <springProfile name="dev">
+        <property name="env_name" value="dev"/>
+        <property name="default_max_history" value="7"/>
+        <property name="default_total_size_cap" value="3GB"/>
+        <property name="default_clean_history_on_start" value="true"/>
+        <property name="default_level" value="debug"/>
+        <property name="console_out_level" value="debug"/>
+    </springProfile>
+
+    <springProfile name="prepro">
+        <property name="env_name" value="prepro"/>
+    </springProfile>
+
+<!--    <springProfile name="(dev|test|prepro)">-->
+<!--        <property name="graylogHost" value="192.168.138.40"/>-->
+<!--        <property name="graylogPort" value="12201"/>-->
+<!--    </springProfile>-->
+
+<!--    <springProfile name="prod">-->
+<!--        <property name="graylogHost" value="10.14.5.27"/>-->
+<!--        <property name="graylogPort" value="25678"/>-->
+<!--    </springProfile>-->
+
+    <!--生产环境默认值-->
+    <springProfile name="prod">
+        <property name="env_name" value="prod"/>
+        <property name="default_max_history" value="30"/>
+        <property name="default_total_size_cap" value="500MB"/>
+        <property name="default_clean_history_on_start" value="false"/>
+        <property name="default_level" value="warn"/>
+        <property name="console_out_level" value="info"/>
+    </springProfile>
+    <!--除（本地，生产）环境外默认值-->
+    <springProfile name="!(dev | prod | test)">
+        <property name="default_max_history" value="30"/>
+        <property name="default_total_size_cap" value="3GB"/>
+        <property name="default_clean_history_on_start" value="false"/>
+        <property name="default_level" value="debug"/>
+        <property name="console_out_level" value="debug"/>
+    </springProfile>
+
+    <springProfile name="test">
+        <property name="env_name" value="test"/>
+        <property name="default_max_history" value="30"/>
+        <property name="default_total_size_cap" value="3GB"/>
+        <property name="default_clean_history_on_start" value="false"/>
+        <property name="default_level" value="warn"/>
+        <property name="console_out_level" value="info"/>
+    </springProfile>
+
+<!--    <springProperty scope="context" name="limin.graylog.host" source="limin.graylog.host"/>-->
+<!--    <springProperty scope="context" name="limin.graylog.port" source="limin.graylog.port"/>-->
+
+    <springProperty scope="context" name="app_name" source="spring.application.name"/>
+
+    <springProperty scope="context" name="max_history" source="log.maxHistory" defaultValue="${default_max_history}"/>
+
+    <springProperty scope="context" name="total_size_cap" source="log.totalSizeCap"
+                    defaultValue="${default_total_size_cap}"/>
+
+    <springProperty scope="context" name="clean_history_on_start" source="log.cleanHistoryOnStart"
+                    defaultValue="${default_clean_history_on_start}"/>
+
+    <springProperty scope="context" name="level" source="log.level" defaultValue="${default_level}"/>
+
+    <!--控制台打印日志的级别-->
+    <springProperty scope="context" name="console_level" source="log.consoleLevel" defaultValue="${console_out_level}"/>
+
+    <!-- 服务运行环境 （profile区分不了，因为预生产于生产都是prod的profile）-->
+    <springProperty scope="context" name="log_env" source="log_env" defaultValue="dev"/>
+
+    <!-- 控制台输出 -->
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${log_pattern}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${console_level}</level>
+        </filter>
+    </appender>
+
+    <!-- debug级别日志 -->
+    <appender name="log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名-->
+            <FileNamePattern>${log_home}/dangjian_${level}.log.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>${max_history}</MaxHistory>
+            <!--用来控制所有归档文件总的大小。当达到这个大小后，旧的归档文件将会被异步的删除。
+            使用这个属性时还需要设置 maxHistory 属性。
+            而且，maxHistory 将会被作为第一条件，该属性作为第二条件。
+            当天重启服务日志时超过限制也将-->
+            <totalSizeCap>${total_size_cap}</totalSizeCap>
+            <!--设置为 true，那么在 appender 启动的时候，归档文件将会被删除。默认的值为 false。
+            归档文件的删除通常在轮转期间执行。但是，有些应用的存活时间可能等不到轮转触发。
+            对于这种短期应用，可以通过设置该属性为 true，在 appender 启动的时候执行删除操作。-->
+            <CleanHistoryOnStart>${clean_history_on_start}</CleanHistoryOnStart>
+        </rollingPolicy>
+        <!--这里设置日志级别为debug-->
+        <!--临界值过滤器，过滤掉低于指定临界值的日志。-->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${level}</level>
+        </filter>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>${log_pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 慢sql日志 -->
+    <appender name="slow_sql_log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名-->
+            <FileNamePattern>${log_home}/alibaba_slowsql.log.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>30</MaxHistory>
+            <!--用来控制所有归档文件总的大小。当达到这个大小后，旧的归档文件将会被异步的删除。
+            使用这个属性时还需要设置 maxHistory 属性。
+            而且，maxHistory 将会被作为第一条件，该属性作为第二条件。
+            当天重启服务日志时超过限制也将-->
+            <totalSizeCap>500MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>${log_pattern}</pattern>
+        </encoder>
+
+    </appender>
+
+<!--    <appender name="GELF" class="de.siegmar.logbackgelf.GelfUdpAppender">-->
+<!--        <graylogHost>${limin.graylog.host}</graylogHost>-->
+<!--        <graylogPort>${limin.graylog.port}</graylogPort>-->
+<!--        <encoder class="de.siegmar.logbackgelf.GelfEncoder">-->
+<!--            <staticField>app-name:${app_name}</staticField>-->
+<!--            <staticField>env:${env_name}</staticField>-->
+<!--            <staticField>log_env:${log_env}</staticField>-->
+<!--        </encoder>-->
+<!--        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
+<!--            <level>debug</level>-->
+<!--        </filter>-->
+<!--    </appender>-->
+
+<!--    <appender name="Async GELF" class="ch.qos.logback.classic.AsyncAppender">-->
+<!--        <appender-ref ref="GELF"/>-->
+<!--    </appender>-->
+
+    <logger name="com.wanxb" level="debug"/>
+<!--    <logger name="com.limin" level="TRACE"/>-->
+<!--    <logger name="org.mybatis.spring.SqlSessionUtils" level="TRACE"/>-->
+<!--    <logger name="org.springframework.data.redis.core" level="TRACE"/>-->
+    <logger name="com.alibaba.druid.filter.stat">
+        <appender-ref ref="slow_sql_log"/>
+    </logger>
+
+    <if condition="&quot;${log_env}&quot; != &quot;dev&quot; &amp;&amp; &quot;${log_env}&quot; != &quot;preprod&quot;">
+        <then>
+            <root level="WARN">
+                <appender-ref ref="Async GELF"/>
+                <appender-ref ref="stdout"/>
+                <appender-ref ref="log"/>
+            </root>
+        </then>
+        <else>
+            <root level="WARN">
+                <appender-ref ref="stdout"/>
+            </root>
+        </else>
+    </if>
+</included>

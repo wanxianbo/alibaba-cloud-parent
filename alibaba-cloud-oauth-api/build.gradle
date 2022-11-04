@@ -4,5 +4,5 @@ jar {
 }
 
 dependencies {
-
+    api project(':alibaba-cloud-base')
 }
