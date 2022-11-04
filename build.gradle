@@ -154,7 +154,7 @@ subprojects { sub ->
         repositories {
             maven {
                 def isSnapshot = version.toString().endsWith("SNAPSHOT")
-                url = "http://whrdd.f3322.net:8090/repository/maven-${isSnapshot ? 'snapshots' : 'releases'}"
+                url = "https://maven.aliyun.com/repository/public/${isSnapshot ? 'snapshots' : 'releases'}"
                 credentials {
                     username ''
                     password ''
