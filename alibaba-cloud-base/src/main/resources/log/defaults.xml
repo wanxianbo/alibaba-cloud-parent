@@ -129,7 +129,7 @@ initialization performed by Boot
     <appender name="slow_sql_log" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--日志文件输出的文件名-->
-            <FileNamePattern>${log_home}/dangjian_slowsql.log.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <FileNamePattern>${log_home}/alibaba_slowsql.log.%d{yyyy-MM-dd}.log</FileNamePattern>
             <!--日志文件保留天数-->
             <MaxHistory>30</MaxHistory>
             <!--用来控制所有归档文件总的大小。当达到这个大小后，旧的归档文件将会被异步的删除。
@@ -162,7 +162,7 @@ initialization performed by Boot
 <!--        <appender-ref ref="GELF"/>-->
 <!--    </appender>-->
 
-    <logger name="com.limin" level="debug"/>
+    <logger name="com.wanxb" level="debug"/>
 <!--    <logger name="com.limin" level="TRACE"/>-->
 <!--    <logger name="org.mybatis.spring.SqlSessionUtils" level="TRACE"/>-->
 <!--    <logger name="org.springframework.data.redis.core" level="TRACE"/>-->
