@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.wanxb.constants.GatewayConstants.JWT_PAYLOAD;
+import static com.wanxb.constants.GatewayConstants.OPEN_FLAG;
+
 /**
  * <p>
  *  bearer 认证头的拦截器
@@ -33,10 +36,6 @@ import java.util.stream.Collectors;
 public class JWTHeaderFilter implements GlobalFilter, Ordered {
 
     private static final Logger log = LoggerFactory.getLogger(JWTHeaderFilter.class);
-
-    public static final String JWT_PAYLOAD = ".JWT_PAYLOAD";
-
-    private static final String OPEN_FLAG = ".OPEN_FLAG";
 
     private final DcCache dcCache;
 
