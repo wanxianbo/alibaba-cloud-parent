@@ -27,12 +27,6 @@ public class UserJwtTokenEnhancer implements TokenEnhancer {
 
     private static final String REQUEST_CACHE_CURRENT_USER_INFO = "currentUserInfo";
 
-//    private String dc;
-//
-//    public UserJwtTokenEnhancer(String dc) {
-//        this.dc = dc;
-//    }
-
     @Override
     public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
         if (authentication.getUserAuthentication() instanceof UsernamePasswordAuthenticationToken) {
@@ -51,8 +45,6 @@ public class UserJwtTokenEnhancer implements TokenEnhancer {
                         //昵称
                         info.put(TokenConstants.NAME,userVo.getName());
                     }
-                    //独立部署标志
-//                    info.put(TokenConstants.DC,dc);
                 }
                 RequestContextHolder.getRequestAttributes().setAttribute(REQUEST_CACHE_CURRENT_USER_INFO, userVo, RequestAttributes.SCOPE_REQUEST);
             }
