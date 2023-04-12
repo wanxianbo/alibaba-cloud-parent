@@ -118,8 +118,6 @@ subprojects { sub ->
         compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
         compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.3'
         compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.3'
-        compile 'cn.afterturn:easypoi-base:4.4.0'
-        compile 'cn.afterturn:easypoi-annotation:4.4.0'
 
 
 
@@ -198,5 +196,6 @@ configure(subprojects.findAll { it.name.endsWith("-wrap") }) {
 configure(subprojects.findAll { it.name.endsWith("-impl") || it.name.endsWith("-wrap") || it.name.endsWith("-gateway")  }) {
     dependencies {
         implementation("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config")
+        implementation 'org.springframework.cloud:spring-cloud-starter-zipkin'
     }
 }

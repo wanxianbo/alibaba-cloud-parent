@@ -74,17 +74,7 @@ public class UcUser {
     private String icon;
 
     /**
-     * 老系统用户id
-     */
-    private String oldUserId;
-
-    /**
      * 修改人
      */
     private String modifyBy;
-
-    /**
-     * im_id
-     */
-    private String accid;
 }

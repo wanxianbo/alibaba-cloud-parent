@@ -6,10 +6,10 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: ${discovery_addr:182.61.42.24:8848}
+        server-addr: ${discovery_addr:127.0.0.1:8848}
         namespace: ${discovery_space:alibaba-cloud-dev}
       config:
-        server-addr: ${discovery_addr:182.61.42.24:8848}
+        server-addr: ${discovery_addr:127.0.0.1:8848}
         namespace: ${discovery_space:alibaba-cloud-dev}
         file-extension: yml
         extension-configs:
@@ -19,3 +19,9 @@ spring:
       transport:
         dashboard: ${sentinel_addr:127.0.0.1:18080}
       eager: true
+  sleuth:
+    sampler:
+      probability: 1.0
+  zipkin:
+    base-url: ${zipkin_addr:http://127.0.0.1:9411}
+    discovery-client-enabled: false
